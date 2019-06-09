@@ -6,6 +6,10 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Avatar from '@material-ui/core/Avatar';
+
+import getMeetups from '../services/meetup.service';
+import formatDate from '../utilities/date.utilities';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -16,43 +20,49 @@ const useStyles = makeStyles(theme => ({
   table: {
     minWidth: 650,
   },
+  avatar:{
+      float: 'left',
+      margin: 5,
+      marginRight: 10
+  },
+  speaker: {
+      height: 50,
+  },
+  name: {
+    lineHeight: '50px',
+},
 }));
-
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
 
 function SimpleTable() {
   const classes = useStyles();
-
+  const meetups = getMeetups();
   return (
     <Paper className={classes.root}>
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
-            <TableCell>Dessert (100g serving)</TableCell>
-            <TableCell>Calories</TableCell>
-            <TableCell>Fat&nbsp;(g)</TableCell>
-            <TableCell>Carbs&nbsp;(g)</TableCell>
-            <TableCell>Protein&nbsp;(g)</TableCell>
+            <TableCell>Date</TableCell>
+            <TableCell>City</TableCell>
+            <TableCell>Host</TableCell>
+            <TableCell>Speakers</TableCell>
+            <TableCell>Type</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map(row => (
-            <TableRow key={row.name}>
-              <TableCell>{row.name}</TableCell>
-              <TableCell>{row.calories}</TableCell>
-              <TableCell>{row.fat}</TableCell>
-              <TableCell>{row.carbs}</TableCell>
-              <TableCell>{row.protein}</TableCell>
+          {meetups.map(meetup => (
+            <TableRow key={meetup.id}>
+              <TableCell>{formatDate(meetup.date)}</TableCell>
+              <TableCell>{meetup.city}</TableCell>
+              <TableCell>{meetup.host}</TableCell>
+              <TableCell>
+              {meetup.speakers.map(speaker => (
+                  <div className={classes.speaker}>
+                      <Avatar alt={speaker.name} src={speaker.photo} className={classes.avatar} />
+                      <span className={classes.name}>{speaker.name}</span>                
+                  </div>                  
+              ))}
+              </TableCell>
+              <TableCell>{meetup.type}</TableCell>
             </TableRow>
           ))}
         </TableBody>
